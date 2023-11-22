@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bba484u3nf0jg"]
+
+[ext_resource type="Script" path="res://Car.gd" id="1_c43xr"]
+[ext_resource type="Texture2D" uid="uid://dwawe8py6jy3f" path="res://icon.svg" id="1_mx5bu"]
+
+[node name="scene" type="Node"]
+
+[node name="Car" type="CharacterBody2D" parent="."]
+position = Vector2(94, 667)
+script = ExtResource("1_c43xr")
+
+[node name="Sprite2D" type="Sprite2D" parent="Car"]
+scale = Vector2(1, 2)
+texture = ExtResource("1_mx5bu")
+metadata/_edit_lock_ = true

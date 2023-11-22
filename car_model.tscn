@@ -1,0 +1,121 @@
+[gd_scene load_steps=14 format=3 uid="uid://bdyd76ow7em23"]
+
+[ext_resource type="PackedScene" uid="uid://bdrilbysruktn" path="res://corolla.glb" id="1_noxkh"]
+[ext_resource type="Script" path="res://car_model.gd" id="1_x6yet"]
+[ext_resource type="PackedScene" uid="uid://dthfpqu313u57" path="res://car_wheel.tscn" id="3_512ek"]
+[ext_resource type="PackedScene" uid="uid://dy38b4l685y5u" path="res://steering_wheel.glb" id="4_lw5vk"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ekj1e"]
+size = Vector2(0.45, 0.3)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wgdwg"]
+viewport_path = NodePath("body/left_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3dwcf"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_wgdwg")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xx67s"]
+size = Vector2(0.45, 0.3)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_edci0"]
+viewport_path = NodePath("body/right_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nb6ua"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_edci0")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_acldt"]
+size = Vector2(0.6, 0.2)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pk235"]
+viewport_path = NodePath("body/rear_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xtnmn"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_pk235")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[node name="car_model" type="CharacterBody3D"]
+script = ExtResource("1_x6yet")
+
+[node name="body" parent="." instance=ExtResource("1_noxkh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0230565, 0)
+
+[node name="left_viewport" type="SubViewport" parent="body"]
+size = Vector2i(225, 150)
+
+[node name="left_cam" type="Camera3D" parent="body/left_viewport"]
+transform = Transform3D(0.991983, 0, -0.126372, 0, 1, 0, 0.126372, 0, 0.991983, 2.476, 2.264, 1.1)
+fov = 80.0
+
+[node name="right_viewport" type="SubViewport" parent="body"]
+size = Vector2i(225, 150)
+
+[node name="right_cam" type="Camera3D" parent="body/right_viewport"]
+transform = Transform3D(0.991894, 0, 0.127065, 0, 1, 0, -0.127065, 0, 0.991894, -2.476, 2.264, 1.1)
+fov = 80.0
+
+[node name="rear_viewport" type="SubViewport" parent="body"]
+handle_input_locally = false
+size = Vector2i(525, 175)
+
+[node name="rear_cam" type="Camera3D" parent="body/rear_viewport"]
+transform = Transform3D(1, 0, 0, 0, 0.982935, -0.183951, 0, 0.183951, 0.982935, 0, 2.94327, -3.30023)
+fov = 56.3
+
+[node name="left_side_mirror" type="MeshInstance3D" parent="body"]
+transform = Transform3D(-0.977745, -0.209738, 0.00496593, -0.00507889, -4.41604e-08, -0.999987, 0.209735, -0.977758, -0.00106519, 2.58233, 2.35363, 1.7451)
+mesh = SubResource("PlaneMesh_ekj1e")
+skeleton = NodePath("../rear_view_mirror")
+surface_material_override/0 = SubResource("StandardMaterial3D_3dwcf")
+
+[node name="right_side_mirror" type="MeshInstance3D" parent="body"]
+transform = Transform3D(-0.97777, 0.209619, 0.00511964, -0.00523596, -2.28871e-10, -0.999986, -0.209616, -0.977784, 0.00109755, -2.582, 2.354, 1.745)
+mesh = SubResource("PlaneMesh_xx67s")
+skeleton = NodePath("../rear_view_mirror")
+surface_material_override/0 = SubResource("StandardMaterial3D_nb6ua")
+
+[node name="rear_view_mirror" type="MeshInstance3D" parent="body"]
+transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 2.72182e-08, -0.31134, -0.950299, 8.30777e-08, -0.950299, 0.31134, -0.00195676, 2.95381, 0.717143)
+mesh = SubResource("PlaneMesh_acldt")
+skeleton = NodePath("../steering_wheel")
+surface_material_override/0 = SubResource("StandardMaterial3D_xtnmn")
+
+[node name="steering_wheel" parent="body" instance=ExtResource("4_lw5vk")]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 1.09605, 1.89935, 1.34506)
+rotation_order = 0
+
+[node name="cam_transforms" type="Node3D" parent="body"]
+
+[node name="rear" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(1, 0, 0, 0, 0.982935, -0.183951, 0, 0.183951, 0.982935, 0, 2.92021, -3.30023)
+remote_path = NodePath("../../rear_viewport/rear_cam")
+
+[node name="left" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(0.809478, 0, -0.58715, 0, 1, 0, 0.58715, 0, 0.809478, 2.476, 2.241, 1.433)
+remote_path = NodePath("../../left_viewport/left_cam")
+
+[node name="right" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(0.809017, 0, 0.587785, 0, 1, 0, -0.587785, 0, 0.809017, -2.476, 2.241, 1.433)
+remote_path = NodePath("../../right_viewport/right_cam")
+
+[node name="front_l" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(0.999998, 0, 0.00190241, 0, 1, 0, -0.00190241, 0, 0.999998, 2.3, 0.593554, 3.70648)
+
+[node name="front_r" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(-0.999998, 0, 0.00190241, 0, 1, 0, 0.00190241, 0, 0.999998, -2.3, 0.593554, 3.70648)
+
+[node name="rear_l" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(0.999998, 0, 0.00190241, 0, 1, 0, -0.00190241, 0, 0.999998, 2.3, 0.593554, -3.17028)
+
+[node name="rear_r" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(-0.999998, 0, 0.00190241, 0, 1, 0, 0.00190241, 0, 0.999998, -2.3, 0.593554, -3.17028)
