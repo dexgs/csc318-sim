@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqbermdtx5msv"]
+
+[ext_resource type="PackedScene" uid="uid://bdrilbysruktn" path="res://corolla.glb" id="1_x24fp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kgkud"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="corolla" instance=ExtResource("1_x24fp")]
+
+[node name="grill" parent="body" index="3"]
+surface_material_override/0 = SubResource("StandardMaterial3D_kgkud")

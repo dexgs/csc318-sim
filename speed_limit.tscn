@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://j6eohfgd7kcc"]
+
+[ext_resource type="Script" path="res://speed_limit.gd" id="1_no4nx"]
+
+[node name="speed_limit" type="Area3D"]
+script = ExtResource("1_no4nx")

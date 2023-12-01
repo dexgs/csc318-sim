@@ -1,0 +1,209 @@
+[gd_scene load_steps=27 format=3 uid="uid://bdyd76ow7em23"]
+
+[ext_resource type="Script" path="res://car.gd" id="1_hpb6o"]
+[ext_resource type="PackedScene" uid="uid://cqbermdtx5msv" path="res://body_model.tscn" id="3_7lue6"]
+[ext_resource type="PackedScene" uid="uid://dthfpqu313u57" path="res://car_wheel.tscn" id="3_512ek"]
+[ext_resource type="PackedScene" uid="uid://dy38b4l685y5u" path="res://steering_wheel.glb" id="4_lxt64"]
+[ext_resource type="PackedScene" uid="uid://dtl2mxhlvfwwn" path="res://spedometer.tscn" id="5_tqbio"]
+[ext_resource type="PackedScene" uid="uid://b0jelcu6ony24" path="res://map_screen.tscn" id="6_qhk0s"]
+[ext_resource type="AudioStream" uid="uid://byyq15yisgqni" path="res://engine.ogg" id="7_4snc4"]
+[ext_resource type="AudioStream" uid="uid://jyjgd8g6vmw5" path="res://road_noise.ogg" id="7_kdb57"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ekj1e"]
+size = Vector2(0.45, 0.3)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_wgdwg"]
+viewport_path = NodePath("body/left_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3dwcf"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_wgdwg")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xx67s"]
+size = Vector2(0.45, 0.3)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_edci0"]
+viewport_path = NodePath("body/right_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nb6ua"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_edci0")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_acldt"]
+size = Vector2(0.6, 0.2)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_pk235"]
+viewport_path = NodePath("body/rear_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xtnmn"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_pk235")
+uv1_scale = Vector3(-1, 1, 1)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_y3i4y"]
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_phy4f"]
+viewport_path = NodePath("dash_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hakog"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_phy4f")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_mvrkr"]
+size = Vector2(0.36, 0.558)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vix8m"]
+viewport_path = NodePath("map_viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sw8nn"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_vix8m")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_iebyg"]
+size = Vector2(0.405, 0.61)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cs14v"]
+albedo_color = Color(0.192157, 0.192157, 0.192157, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cjdto"]
+size = Vector3(5.32774, 2.9383, 11.3634)
+
+[node name="car" type="CharacterBody3D"]
+script = ExtResource("1_hpb6o")
+
+[node name="front_l" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(0.999998, 0, 0.00190241, 0, 1, 0, -0.00190241, 0, 0.999998, 2.3, 0.593554, 3.70648)
+
+[node name="front_r" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(-0.999998, 0, 0.00190241, 0, 1, 0, 0.00190241, 0, 0.999998, -2.3, 0.593554, 3.70648)
+
+[node name="rear_l" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(0.999998, 0, 0.00190241, 0, 1, 0, -0.00190241, 0, 0.999998, 2.3, 0.593554, -3.17028)
+
+[node name="rear_r" parent="." instance=ExtResource("3_512ek")]
+transform = Transform3D(-0.999998, 0, 0.00190241, 0, 1, 0, 0.00190241, 0, 0.999998, -2.3, 0.593554, -3.17028)
+
+[node name="body" parent="." instance=ExtResource("3_7lue6")]
+
+[node name="left_viewport" type="SubViewport" parent="body"]
+size = Vector2i(225, 150)
+
+[node name="left_cam" type="Camera3D" parent="body/left_viewport"]
+transform = Transform3D(0.809478, 0, -0.58715, 0, 1, 0, 0.58715, 0, 0.809478, 2.476, 2.241, 1.433)
+current = true
+fov = 80.0
+
+[node name="right_viewport" type="SubViewport" parent="body"]
+size = Vector2i(225, 150)
+
+[node name="right_cam" type="Camera3D" parent="body/right_viewport"]
+transform = Transform3D(0.809017, 0, 0.587785, 0, 1, 0, -0.587785, 0, 0.809017, -2.476, 2.241, 1.433)
+current = true
+fov = 80.0
+
+[node name="rear_viewport" type="SubViewport" parent="body"]
+handle_input_locally = false
+size = Vector2i(525, 175)
+
+[node name="rear_cam" type="Camera3D" parent="body/rear_viewport"]
+transform = Transform3D(1, 0, 0, 0, 0.982935, -0.183951, 0, 0.183951, 0.982935, 0, 2.92021, -3.30023)
+current = true
+fov = 38.2
+
+[node name="attach" type="Node3D" parent="body"]
+
+[node name="left_side_mirror" type="MeshInstance3D" parent="body/attach"]
+transform = Transform3D(-0.97437, -0.224951, 9.83293e-09, 0, -4.37114e-08, -1, 0.224951, -0.97437, 4.25911e-08, 2.5758, 2.35504, 1.74468)
+mesh = SubResource("PlaneMesh_ekj1e")
+skeleton = NodePath("../rear_view_mirror")
+surface_material_override/0 = SubResource("StandardMaterial3D_3dwcf")
+
+[node name="right_side_mirror" type="MeshInstance3D" parent="body/attach"]
+transform = Transform3D(-0.97437, 0.224951, -9.83293e-09, 0, -4.37114e-08, -1, -0.224951, -0.97437, 4.25911e-08, -2.576, 2.355, 1.745)
+mesh = SubResource("PlaneMesh_xx67s")
+skeleton = NodePath("../rear_view_mirror")
+surface_material_override/0 = SubResource("StandardMaterial3D_nb6ua")
+
+[node name="rear_view_mirror" type="MeshInstance3D" parent="body/attach"]
+transform = Transform3D(-1, -8.74228e-08, 4.16303e-15, 2.74226e-08, -0.313678, -0.94953, 8.30105e-08, -0.94953, 0.313678, 0, 2.95228, 0.723929)
+mesh = SubResource("PlaneMesh_acldt")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_xtnmn")
+
+[node name="spedometer" type="MeshInstance3D" parent="body/attach"]
+transform = Transform3D(-1, -8.74228e-08, 4.10421e-15, 1.5715e-09, -0.017976, -0.999838, 8.74087e-08, -0.999838, 0.017976, 1.09312, 1.92713, 1.89773)
+mesh = SubResource("PlaneMesh_y3i4y")
+surface_material_override/0 = SubResource("StandardMaterial3D_hakog")
+
+[node name="steering_wheel" parent="body/attach" instance=ExtResource("4_lxt64")]
+transform = Transform3D(1, 0, 0, 0, 0.0687117, 0.997637, 0, -0.997637, 0.0687117, 1.10789, 1.82566, 1.33788)
+rotation_order = 0
+
+[node name="map_screen" type="MeshInstance3D" parent="body/attach"]
+transform = Transform3D(-0.964324, 0.260803, 0.0453958, -0.036885, 0.0374381, -0.998618, -0.262142, -0.964666, -0.0264827, -0.00180095, 2.07762, 1.63852)
+mesh = SubResource("PlaneMesh_mvrkr")
+surface_material_override/0 = SubResource("StandardMaterial3D_sw8nn")
+
+[node name="phone_border" type="MeshInstance3D" parent="body/attach/map_screen"]
+transform = Transform3D(1, 3.8743e-07, 6.10016e-08, 0, 1, -4.47035e-08, -9.31323e-10, 3.72529e-09, 1, -0.00207919, -0.0030216, -3.71933e-05)
+mesh = SubResource("PlaneMesh_iebyg")
+surface_material_override/0 = SubResource("StandardMaterial3D_cs14v")
+
+[node name="cam_transforms" type="Node3D" parent="body"]
+
+[node name="rear" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(1, 0, 0, 0, 0.982935, -0.183951, 0, 0.183951, 0.982935, 0, 2.92021, -3.30023)
+remote_path = NodePath("../../rear_viewport/rear_cam")
+
+[node name="left" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(0.809478, 0, -0.58715, 0, 1, 0, 0.58715, 0, 0.809478, 2.476, 2.241, 1.433)
+remote_path = NodePath("../../left_viewport/left_cam")
+
+[node name="right" type="RemoteTransform3D" parent="body/cam_transforms"]
+transform = Transform3D(0.809017, 0, 0.587785, 0, 1, 0, -0.587785, 0, 0.809017, -2.476, 2.241, 1.433)
+remote_path = NodePath("../../right_viewport/right_cam")
+
+[node name="dash_viewport" type="SubViewport" parent="."]
+
+[node name="spedometer" parent="dash_viewport" instance=ExtResource("5_tqbio")]
+
+[node name="map_viewport" type="SubViewport" parent="."]
+size = Vector2i(419, 650)
+
+[node name="map_screen" parent="map_viewport" instance=ExtResource("6_qhk0s")]
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6376, 0)
+shape = SubResource("BoxShape3D_cjdto")
+
+[node name="road_noise" type="AudioStreamPlayer3D" parent="."]
+editor_description = "Sound Effect from <a href=\"https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=29978\">Pixabay</a>"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.10801, 0.188833)
+stream = ExtResource("7_kdb57")
+volume_db = -80.0
+autoplay = true
+
+[node name="engine" type="AudioStreamPlayer3D" parent="."]
+editor_description = "Sound Effect from <a href=\"https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=7087\">Pixabay</a>"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.10448, 4.51618)
+stream = ExtResource("7_4snc4")
+max_db = 1.0
+autoplay = true
+
+[node name="stop_timer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[connection signal="timeout" from="stop_timer" to="." method="_on_stop_timer_timeout"]

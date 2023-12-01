@@ -1,69 +1,133 @@
-[gd_scene load_steps=6 format=3 uid="uid://cvfp6yecwu62u"]
+[gd_scene load_steps=21 format=3 uid="uid://cvfp6yecwu62u"]
 
-[ext_resource type="PackedScene" uid="uid://bdyd76ow7em23" path="res://car_model.tscn" id="1_po5jm"]
+[ext_resource type="Texture2D" uid="uid://c8bymuw6b711c" path="res://sky.jpg" id="1_arl4g"]
+[ext_resource type="PackedScene" uid="uid://bdyd76ow7em23" path="res://car.tscn" id="1_po5jm"]
+[ext_resource type="PackedScene" uid="uid://bi1s8omln5us4" path="res://driving_ui.tscn" id="2_ivnin"]
+[ext_resource type="Script" path="res://controller.gd" id="3_qdkd6"]
+[ext_resource type="PackedScene" uid="uid://s8dlpep3e45x" path="res://roads.glb" id="4_dfux4"]
+[ext_resource type="PackedScene" uid="uid://csa1nt0v1je07" path="res://wall.glb" id="5_rf1wa"]
+[ext_resource type="PackedScene" uid="uid://ljlrinle5rg0" path="res://buildings.glb" id="6_em5m8"]
+[ext_resource type="PackedScene" uid="uid://cc2fs5hw3ykyp" path="res://houses.glb" id="7_061hr"]
+[ext_resource type="PackedScene" uid="uid://bhrtdk8t3a1y4" path="res://stop_signs.glb" id="8_52r5s"]
+[ext_resource type="PackedScene" uid="uid://cjbru8iw5ol2o" path="res://limit_signs.glb" id="9_1g2ba"]
+[ext_resource type="PackedScene" uid="uid://j6eohfgd7kcc" path="res://speed_limit.tscn" id="10_hymo2"]
+[ext_resource type="PackedScene" uid="uid://dhg3jlvgmx80h" path="res://trees.glb" id="10_ypi31"]
+[ext_resource type="PackedScene" uid="uid://65dktuegxdfm" path="res://stop_area.tscn" id="13_qfpo7"]
 
-[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_3fhvm"]
-rayleigh_color = Color(0.101961, 0.415686, 0.921569, 1)
-ground_color = Color(0.47451, 0.372549, 0.25098, 1)
-energy_multiplier = 3.59
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nbras"]
+panorama = ExtResource("1_arl4g")
 
 [sub_resource type="Sky" id="Sky_7cj71"]
-sky_material = SubResource("PhysicalSkyMaterial_3fhvm")
+sky_material = SubResource("PanoramaSkyMaterial_nbras")
 
 [sub_resource type="Environment" id="Environment_hggus"]
 background_mode = 2
 background_color = Color(0, 0, 0.615686, 1)
 sky = SubResource("Sky_7cj71")
-ambient_light_energy = 0.0
+ambient_light_sky_contribution = 0.3
 tonemap_mode = 2
 
-[sub_resource type="BoxMesh" id="BoxMesh_s3rbs"]
-size = Vector3(5, 5, 5)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_13unw"]
+albedo_color = Color(0.223529, 0.258824, 0.14902, 1)
+roughness = 0.79
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5tuq6"]
+material = SubResource("StandardMaterial3D_13unw")
+size = Vector2(5000, 5000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_so1sa"]
+size = Vector3(88.6749, 29.8588, 44.8389)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eutq7"]
+size = Vector3(19.6857, 13.6267, 46.4805)
 
 [node name="3d_scene" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.928122, 0.300308, -0.220009, 0, 0.590986, 0.806682, 0.372275, -0.7487, 0.548507, 0, 10, 0)
+transform = Transform3D(-0.727569, 0.553411, -0.405436, -8.05342e-09, 0.590985, 0.806682, 0.686034, 0.586917, -0.429983, 0, 10, 0)
 light_energy = 0.695
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hggus")
 
-[node name="car_model" parent="." instance=ExtResource("1_po5jm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.3947, 0, -23.6297)
+[node name="car" parent="." instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.999851, 0, -0.0173126, 0, 1, 0, 0.0173126, 0, 0.999851, -22.6891, 0, 233.51)
+is_player = true
 
-[node name="car_cam" type="Camera3D" parent="car_model"]
-transform = Transform3D(-1, -8.22721e-09, -8.70348e-08, 0, 0.995562, -0.0941083, 8.74228e-08, -0.0941083, -0.995562, 1.175, 2.762, -0.45)
+[node name="car_cam" type="Camera3D" parent="car"]
+transform = Transform3D(-1, -8.22721e-09, -8.70348e-08, -9.86925e-09, 0.999822, 0.0188834, 8.68639e-08, 0.0188834, -0.999822, 1.175, 2.9489, -0.258694)
 current = true
-fov = 76.5
+fov = 80.0
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-3.13819e-09, 0.0717934, -0.99742, -4.35986e-08, 0.99742, 0.0717934, 1, 4.37114e-08, -2.10203e-15, -63.8346, 10.0844, 0)
+[node name="driving_ui" parent="." instance=ExtResource("2_ivnin")]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.87758, 2.52778, 0)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="controller" type="Node" parent="."]
+script = ExtResource("3_qdkd6")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.87758, 7.45081, -1.13588)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1092.65, -3.5, 2266.81)
+mesh = SubResource("PlaneMesh_5tuq6")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.7657, 2.3223, -1.13588)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="roads" parent="." instance=ExtResource("4_dfux4")]
 
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.909338, 0.416059, 0, -0.416059, 0.909338, -18.7657, 7.38778, -1.13588)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="wall" parent="." instance=ExtResource("5_rf1wa")]
 
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.0610311, -0.907643, -0.415283, 0.998136, -0.0554979, -0.0253925, 0, -0.416059, 0.909338, -11.277, 2.4511, 45.0889)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="buildings" parent="." instance=ExtResource("6_em5m8")]
 
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.0335253, -0.846246, 0.531736, 0.998136, -0.0554979, -0.0253925, 0.0509985, 0.529893, 0.846529, -18.7804, 2.4511, 45.0889)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="houses" parent="." instance=ExtResource("7_061hr")]
 
-[node name="MeshInstance3D7" type="MeshInstance3D" parent="."]
-transform = Transform3D(-0.0335253, -0.846246, 0.531736, 0.998136, -0.0554979, -0.0253925, 0.0509985, 0.529893, 0.846529, -14.5145, 7.40748, 45.4157)
-mesh = SubResource("BoxMesh_s3rbs")
+[node name="stop_signs" parent="." instance=ExtResource("8_52r5s")]
+
+[node name="limit_signs" parent="." instance=ExtResource("9_1g2ba")]
+
+[node name="trees" parent="." instance=ExtResource("10_ypi31")]
+
+[node name="speed_limits" type="Node3D" parent="."]
+
+[node name="speed_limit" parent="speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit4" parent="speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit4"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit5" parent="speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.69415, 1.47445, 259.044)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit5"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit2" parent="speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(0.895323, 0, -0.445417, 0, 1, 0, 0.445417, 0, 0.895323, -211.31, 1.96698, 1341.48)
+limit = 40.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit3" parent="speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(-0.00677186, 0, -0.999977, 0, 1, 0, 0.999977, 0, -0.00677186, -367.371, 1.96698, 1870.94)
+limit = 30.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="StopArea" parent="." instance=ExtResource("13_qfpo7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -699.72, -0.580872, 1827.21)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StopArea"]
+transform = Transform3D(0.999856, 0, -0.0169638, 0, 1, 0, 0.0169638, 0, 0.999856, -1.17474, 6.67991, 5.38831)
+shape = SubResource("BoxShape3D_eutq7")
+
+[node name="StopArea2" parent="." instance=ExtResource("13_qfpo7")]
+transform = Transform3D(0.0363298, 0, 0.99934, 0, 1, 0, -0.99934, 0, 0.0363298, -774.588, -0.580872, 2291.64)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StopArea2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.67991, 5.38831)
+shape = SubResource("BoxShape3D_eutq7")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://65dktuegxdfm"]
+
+[ext_resource type="Script" path="res://stop_area.gd" id="1_3gcb4"]
+
+[node name="StopArea" type="Area3D"]
+script = ExtResource("1_3gcb4")

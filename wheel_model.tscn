@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqaabm1c2c1ec"]
+
+[ext_resource type="PackedScene" uid="uid://b4o8l3se63r3a" path="res://wheel.glb" id="1_4s7gw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3acou"]
+albedo_color = Color(0.196078, 0.196078, 0.196078, 1)
+
+[node name="wheel" instance=ExtResource("1_4s7gw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.414433, 0, 0)
+
+[node name="Circle_001" parent="wheel2" index="1"]
+transform = Transform3D(0, 0.622037, 0, -0.622037, 0, 0, 0, 0, 0.622037, -0.0850179, 0, 0)
+
+[node name="Cylinder" parent="wheel2" index="2"]
+surface_material_override/0 = SubResource("StandardMaterial3D_3acou")
