@@ -1,6 +1,11 @@
+class_name Car
 extends CharacterBody3D
 
 @export var is_player: bool = false
+@export var next_checkpoint_path: NodePath = NodePath("")
+var next_checkpoint: Checkpoint = null
+@export var active_radius = 1000
+var activated = false
 
 var rpm_climb: float = 0.5
 var rpm_decay: float = 0.3
@@ -29,13 +34,28 @@ const FORWARD: Vector3 = Vector3(0, 0, 1)
 
 func _ready() -> void:
 	if is_player:
-		rpm = 5
+		rpm = 4.5
+		$left_beep_timer.start()
+		$right_beep_timer.start()
+	else:
+		$body/attach.queue_free()
+		$body/left_viewport.queue_free()
+		$body/right_viewport.queue_free()
+		$body/rear_viewport.queue_free()
+		$body/cam_transforms.queue_free()
+		if next_checkpoint_path != NodePath(""):
+			next_checkpoint = get_node(next_checkpoint_path)
+		else:
+			$engine.queue_free()
+			$road_noise.queue_free()
+		
+		$active_area/CollisionShape3D.shape.set_radius(active_radius)
 
 func power(rpm: float) -> float:
 	return rpm * 10
 
 func input(throttle: float, brake: float, steering: float) -> void:
-	if velocity.length() < 1:
+	if velocity.length() < 0.2:
 		if throttle > 0.0 and reverse:
 			rpm = 0.0
 			reverse = false
@@ -64,10 +84,11 @@ func drive(reverse: bool, throttle: float, brake: float, steering: float, delta:
 	$front_l.angle = -steering * 0.5
 	$front_r.angle = -steering * 0.5
 	
-	var steering_wheel_rotation = $body/attach/steering_wheel.get_rotation()
-	$body/attach/steering_wheel.set_rotation(Vector3(steering_wheel_rotation.x, -steering * 1.5, 0))
+	if is_player:
+		var steering_wheel_rotation = $body/attach/steering_wheel.get_rotation()
+		$body/attach/steering_wheel.set_rotation(Vector3(steering_wheel_rotation.x, -steering * 1.5, 0))
 	
-	$dash_viewport/spedometer.speed = velocity.length() * 1.5
+		$dash_viewport/spedometer.speed = velocity.length() * 1.5
 	
 	# transform with translation removed
 	var rotate_transform = transform.translated(-position)
@@ -103,6 +124,8 @@ func drive(reverse: bool, throttle: float, brake: float, steering: float, delta:
 	assert(0 <= c and c <= 1)
 	
 	if throttle > 0.0 and brake == 0.0:
+		if rpm < 0.5:
+			rpm = 0.5
 		rpm += throttle * rpm_climb * max(1 - c, 0.3) * delta
 	else:
 		rpm -= rpm_decay * delta
@@ -171,9 +194,9 @@ func get_speed_limit() -> void:
 
 func update_sounds() -> void:
 	$road_noise.volume_db = velocity.length() -30
-	$road_noise.pitch_scale = min(velocity.length() / 30, 3.0)
+	$road_noise.pitch_scale = max(min(velocity.length() / 30, 3.0), 0.1)
 	
-	$engine.volume_db = max(min(velocity.length() / 30, 1.0), 0.3) * throttle * 20 - 30
+	$engine.volume_db = max(min(velocity.length() / 30, 1.0), 0.5) * throttle * 20 - 30
 	$engine.pitch_scale = max(throttle * 1.5, 0.1)
 
 func detect_stop_area() -> void:
@@ -185,20 +208,67 @@ func detect_stop_area() -> void:
 func _on_stop_timer_timeout():
 	$map_viewport/map_screen.stop = true
 
-func _physics_process(delta: float) -> void:
-	var steering = 0.0
-	if Input.is_action_pressed('ui_left'):
-		steering = -1.0
-	elif Input.is_action_pressed('ui_right'):
-		steering = 1.0
+func drive_to_checkpoint():
+	var diff = next_checkpoint.get_position() - position
+	var diff_2d = Vector2(diff.x, diff.z)
 	
-	var throttle = 0.0
-	if Input.is_action_pressed('ui_up'):
-		throttle = 1.0
+	throttle = 0.0
+	brake = 0.0
 	
-	var brake = 0.0
-	if Input.is_action_pressed('ui_down'):
+	var speed = velocity.length() * 1.5
+	
+	if $front_raycast.is_colliding():
 		brake = 1.0
+	elif speed < next_checkpoint.target_speed:
+		if speed < 1:
+			rpm = next_checkpoint.target_speed / 15
+		else:
+			throttle = 1.0
+	elif speed - next_checkpoint.target_speed > 10:
+		brake = 0.4
+	
+	steering = direction.angle_to(diff_2d) / 1.2
+	steering = max(min(steering, 1.0), -1.0)
+	
+	if next_checkpoint.overlaps_body(self):
+		if next_checkpoint.next_checkpoint == NodePath("."):
+			self.queue_free()
+		else:
+			next_checkpoint = next_checkpoint.get_node(next_checkpoint.next_checkpoint)
+
+func detect_sides() -> void:
+	var left_collider = $left_raycast.get_collider(0)
+	if left_collider is CharacterBody3D \
+	and left_collider.velocity.normalized().dot(velocity.normalized()) > 0.5 \
+	and left_collider.velocity.length() > velocity.length() - 3:
+		var d = (position - left_collider.position).project(velocity.normalized()).length()
+		$left_beep.volume_db = -30 - d / 4
+	else:
+		$left_beep.volume_db = -500
+	
+	var right_collider = $right_raycast.get_collider(0)
+	if right_collider is CharacterBody3D \
+	and right_collider.velocity.normalized().dot(velocity.normalized()) > 0.5 \
+	and right_collider.velocity.length() > velocity.length() - 3:
+		var d = (position - right_collider.position).project(velocity.normalized()).length()
+		$right_beep.volume_db = -30 - d / 4
+	else:
+		$right_beep.volume_db = -500
+
+func _physics_process(delta: float) -> void:
+	#var steering = 0.0
+	#if Input.is_action_pressed('ui_left'):
+	#	steering = -1.0
+	#elif Input.is_action_pressed('ui_right'):
+	#	steering = 1.0
+	
+	#var throttle = 0.0
+	#if Input.is_action_pressed('ui_up'):
+	#	throttle = 1.0
+	
+	#var brake = 0.0
+	#if Input.is_action_pressed('ui_down'):
+	#	brake = 1.0
 	
 	#input(throttle, brake, steering)
 	drive(self.reverse, self.throttle, self.brake, self.steering, delta)
@@ -208,7 +278,23 @@ func _physics_process(delta: float) -> void:
 		$map_viewport/map_screen.update_position(position)
 		$map_viewport/map_screen.speed = velocity.length() * 1.5
 		get_speed_limit()
-		update_sounds()
 		detect_stop_area()
+		update_sounds()
+		detect_sides()
+	elif activated:
+		if next_checkpoint != null:
+			drive_to_checkpoint()
+	else:
+		for body in $active_area.get_overlapping_bodies():
+			if body is Car and body.is_player:
+				activated = true
 	
 	move_and_slide()
+
+
+func _on_left_beep_timer_timeout():
+	$left_beep.play()
+
+
+func _on_right_beep_timer_timeout():
+	$right_beep.play()

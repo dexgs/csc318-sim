@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bdyd76ow7em23"]
+[gd_scene load_steps=32 format=3 uid="uid://bdyd76ow7em23"]
 
 [ext_resource type="Script" path="res://car.gd" id="1_hpb6o"]
 [ext_resource type="PackedScene" uid="uid://cqbermdtx5msv" path="res://body_model.tscn" id="3_7lue6"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://b0jelcu6ony24" path="res://map_screen.tscn" id="6_qhk0s"]
 [ext_resource type="AudioStream" uid="uid://byyq15yisgqni" path="res://engine.ogg" id="7_4snc4"]
 [ext_resource type="AudioStream" uid="uid://jyjgd8g6vmw5" path="res://road_noise.ogg" id="7_kdb57"]
+[ext_resource type="AudioStream" uid="uid://dsbprv74sq31u" path="res://beep.ogg" id="9_6vse1"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ekj1e"]
 size = Vector2(0.45, 0.3)
@@ -77,6 +78,19 @@ albedo_color = Color(0.192157, 0.192157, 0.192157, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cjdto"]
 size = Vector3(5.32774, 2.9383, 11.3634)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xjcv8"]
+size = Vector3(5, 5, 11)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_oevnb"]
+resource_local_to_scene = true
+radius = 30.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gvcl2"]
+radius = 10.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_cj5fp"]
+radius = 10.0
 
 [node name="car" type="CharacterBody3D"]
 script = ExtResource("1_hpb6o")
@@ -191,19 +205,65 @@ shape = SubResource("BoxShape3D_cjdto")
 [node name="road_noise" type="AudioStreamPlayer3D" parent="."]
 editor_description = "Sound Effect from <a href=\"https://pixabay.com/sound-effects/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=29978\">Pixabay</a>"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.10801, 0.188833)
+visible = false
 stream = ExtResource("7_kdb57")
 volume_db = -80.0
 autoplay = true
+max_distance = 5.0
 
 [node name="engine" type="AudioStreamPlayer3D" parent="."]
 editor_description = "Sound Effect from <a href=\"https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=7087\">Pixabay</a>"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.10448, 4.51618)
+visible = false
 stream = ExtResource("7_4snc4")
+volume_db = -3.604
 max_db = 1.0
 autoplay = true
+max_distance = 100.0
 
 [node name="stop_timer" type="Timer" parent="."]
 process_callback = 0
 one_shot = true
 
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.688066, 0)
+shape = SubResource("BoxShape3D_xjcv8")
+
+[node name="active_area" type="Area3D" parent="."]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="active_area"]
+shape = SubResource("SphereShape3D_oevnb")
+
+[node name="front_raycast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.822475, 5.2967)
+target_position = Vector3(0, 0, 7.215)
+hit_from_inside = true
+
+[node name="left_raycast" type="ShapeCast3D" parent="."]
+transform = Transform3D(0.0471064, 0, 0.99889, 0, 1, 0, -0.99889, 0, 0.0471064, 9.121, 1.209, -7.77739)
+shape = SubResource("SphereShape3D_gvcl2")
+target_position = Vector3(50, 0, 0)
+
+[node name="right_raycast" type="ShapeCast3D" parent="."]
+transform = Transform3D(-0.0469147, 0, 0.998899, 0, 1, 0, -0.998899, 0, -0.0469147, -9.12101, 1.209, -7.77739)
+shape = SubResource("SphereShape3D_cj5fp")
+target_position = Vector3(50, 0, 0)
+
+[node name="left_beep" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.96703, 2.56509, -0.507059)
+stream = ExtResource("9_6vse1")
+volume_db = -30.0
+
+[node name="right_beep" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.967, 2.565, -0.507)
+stream = ExtResource("9_6vse1")
+volume_db = -30.0
+
+[node name="left_beep_timer" type="Timer" parent="."]
+
+[node name="right_beep_timer" type="Timer" parent="."]
+
 [connection signal="timeout" from="stop_timer" to="." method="_on_stop_timer_timeout"]
+[connection signal="timeout" from="left_beep_timer" to="." method="_on_left_beep_timer_timeout"]
+[connection signal="timeout" from="right_beep_timer" to="." method="_on_right_beep_timer_timeout"]

@@ -1,11 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://cqbermdtx5msv"]
+[gd_scene load_steps=5 format=3 uid="uid://cqbermdtx5msv"]
 
 [ext_resource type="PackedScene" uid="uid://bdrilbysruktn" path="res://corolla.glb" id="1_x24fp"]
+[ext_resource type="Script" path="res://body_model.gd" id="2_brsev"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ktxdo"]
+resource_local_to_scene = true
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+metallic = 0.38
+roughness = 0.45
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kgkud"]
 albedo_color = Color(0.2, 0.2, 0.2, 1)
 
 [node name="corolla" instance=ExtResource("1_x24fp")]
+script = ExtResource("2_brsev")
+
+[node name="body" parent="." index="0"]
+surface_material_override/1 = SubResource("StandardMaterial3D_ktxdo")
 
 [node name="grill" parent="body" index="3"]
 surface_material_override/0 = SubResource("StandardMaterial3D_kgkud")

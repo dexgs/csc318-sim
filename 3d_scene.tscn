@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cvfp6yecwu62u"]
+[gd_scene load_steps=24 format=3 uid="uid://cvfp6yecwu62u"]
 
 [ext_resource type="Texture2D" uid="uid://c8bymuw6b711c" path="res://sky.jpg" id="1_arl4g"]
 [ext_resource type="PackedScene" uid="uid://bdyd76ow7em23" path="res://car.tscn" id="1_po5jm"]
@@ -12,20 +12,13 @@
 [ext_resource type="PackedScene" uid="uid://cjbru8iw5ol2o" path="res://limit_signs.glb" id="9_1g2ba"]
 [ext_resource type="PackedScene" uid="uid://j6eohfgd7kcc" path="res://speed_limit.tscn" id="10_hymo2"]
 [ext_resource type="PackedScene" uid="uid://dhg3jlvgmx80h" path="res://trees.glb" id="10_ypi31"]
+[ext_resource type="PackedScene" uid="uid://cqkyf1b3cdq44" path="res://checkpoint.tscn" id="13_jnhlu"]
 [ext_resource type="PackedScene" uid="uid://65dktuegxdfm" path="res://stop_area.tscn" id="13_qfpo7"]
+[ext_resource type="PackedScene" uid="uid://0wn6voucbufh" path="res://bike.tscn" id="15_4otew"]
+[ext_resource type="PackedScene" uid="uid://c8n2askrdp77m" path="res://restart_area.tscn" id="16_llhh8"]
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nbras"]
-panorama = ExtResource("1_arl4g")
-
-[sub_resource type="Sky" id="Sky_7cj71"]
-sky_material = SubResource("PanoramaSkyMaterial_nbras")
-
-[sub_resource type="Environment" id="Environment_hggus"]
-background_mode = 2
-background_color = Color(0, 0, 0.615686, 1)
-sky = SubResource("Sky_7cj71")
-ambient_light_sky_contribution = 0.3
-tonemap_mode = 2
+[sub_resource type="BoxShape3D" id="BoxShape3D_eutq7"]
+size = Vector3(19.6857, 13.6267, 46.4805)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_13unw"]
 albedo_color = Color(0.223529, 0.258824, 0.14902, 1)
@@ -38,14 +31,97 @@ size = Vector2(5000, 5000)
 [sub_resource type="BoxShape3D" id="BoxShape3D_so1sa"]
 size = Vector3(88.6749, 29.8588, 44.8389)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_eutq7"]
-size = Vector3(19.6857, 13.6267, 46.4805)
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_nbras"]
+panorama = ExtResource("1_arl4g")
+
+[sub_resource type="Sky" id="Sky_7cj71"]
+sky_material = SubResource("PanoramaSkyMaterial_nbras")
+
+[sub_resource type="Environment" id="Environment_hggus"]
+background_mode = 2
+background_color = Color(0, 0, 0.615686, 1)
+sky = SubResource("Sky_7cj71")
+ambient_light_source = 2
+ambient_light_color = Color(0.239216, 0.501961, 0.654902, 1)
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.56
 
 [node name="3d_scene" type="Node3D"]
 
+[node name="scenery" type="Node3D" parent="."]
+
+[node name="StopArea" parent="scenery" instance=ExtResource("13_qfpo7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -699.72, -0.580872, 1827.21)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/StopArea"]
+transform = Transform3D(0.999856, 0, -0.0169638, 0, 1, 0, 0.0169638, 0, 0.999856, -1.17474, 6.67991, 5.38831)
+shape = SubResource("BoxShape3D_eutq7")
+
+[node name="StopArea2" parent="scenery" instance=ExtResource("13_qfpo7")]
+transform = Transform3D(0.0363298, 0, 0.99934, 0, 1, 0, -0.99934, 0, 0.0363298, -774.588, -0.580872, 2291.64)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/StopArea2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.67991, 5.38831)
+shape = SubResource("BoxShape3D_eutq7")
+
+[node name="ground" type="MeshInstance3D" parent="scenery"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1092.65, -3.5, 2266.81)
+mesh = SubResource("PlaneMesh_5tuq6")
+skeleton = NodePath("../..")
+
+[node name="roads" parent="scenery" instance=ExtResource("4_dfux4")]
+
+[node name="wall" parent="scenery" instance=ExtResource("5_rf1wa")]
+
+[node name="buildings" parent="scenery" instance=ExtResource("6_em5m8")]
+
+[node name="houses" parent="scenery" instance=ExtResource("7_061hr")]
+
+[node name="stop_signs" parent="scenery" instance=ExtResource("8_52r5s")]
+
+[node name="limit_signs" parent="scenery" instance=ExtResource("9_1g2ba")]
+
+[node name="trees" parent="scenery" instance=ExtResource("10_ypi31")]
+
+[node name="speed_limits" type="Node3D" parent="scenery"]
+
+[node name="speed_limit" parent="scenery/speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/speed_limits/speed_limit"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit4" parent="scenery/speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/speed_limits/speed_limit4"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit5" parent="scenery/speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.69415, 1.47445, 259.044)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/speed_limits/speed_limit5"]
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit2" parent="scenery/speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(0.895323, 0, -0.445417, 0, 1, 0, 0.445417, 0, 0.895323, -211.31, 1.96698, 1341.48)
+limit = 40.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/speed_limits/speed_limit2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
+shape = SubResource("BoxShape3D_so1sa")
+
+[node name="speed_limit3" parent="scenery/speed_limits" instance=ExtResource("10_hymo2")]
+transform = Transform3D(-0.00677186, 0, -0.999977, 0, 1, 0, 0.999977, 0, -0.00677186, -367.371, 1.96698, 1870.94)
+limit = 30.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="scenery/speed_limits/speed_limit3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
+shape = SubResource("BoxShape3D_so1sa")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.727569, 0.553411, -0.405436, -8.05342e-09, 0.590985, 0.806682, 0.686034, 0.586917, -0.429983, 0, 10, 0)
-light_energy = 0.695
+light_color = Color(0.768627, 0.937255, 0.984314, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hggus")
@@ -55,7 +131,7 @@ transform = Transform3D(0.999851, 0, -0.0173126, 0, 1, 0, 0.0173126, 0, 0.999851
 is_player = true
 
 [node name="car_cam" type="Camera3D" parent="car"]
-transform = Transform3D(-1, -8.22721e-09, -8.70348e-08, -9.86925e-09, 0.999822, 0.0188834, 8.68639e-08, 0.0188834, -0.999822, 1.175, 2.9489, -0.258694)
+transform = Transform3D(-1, 1.67829e-09, -8.74067e-08, 0, 0.999816, 0.0191975, 8.74228e-08, 0.0191975, -0.999816, 1.175, 2.9489, -0.258694)
 current = true
 fov = 80.0
 
@@ -64,70 +140,565 @@ fov = 80.0
 [node name="controller" type="Node" parent="."]
 script = ExtResource("3_qdkd6")
 
-[node name="ground" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1092.65, -3.5, 2266.81)
-mesh = SubResource("PlaneMesh_5tuq6")
+[node name="checkpoints" type="Node3D" parent="."]
 
-[node name="roads" parent="." instance=ExtResource("4_dfux4")]
+[node name="road_right_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.2996, 0, 581.034)
+next_checkpoint = NodePath("../road_right_checkpoint2")
+target_speed = 50.0
 
-[node name="wall" parent="." instance=ExtResource("5_rf1wa")]
+[node name="road_right_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.2438, 0, 704.558)
+next_checkpoint = NodePath("../road_right_checkpoint3")
+target_speed = 45.0
 
-[node name="buildings" parent="." instance=ExtResource("6_em5m8")]
+[node name="road_right_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84.4352, 0, 896.944)
+next_checkpoint = NodePath("../road_right_checkpoint4")
+target_speed = 40.0
 
-[node name="houses" parent="." instance=ExtResource("7_061hr")]
+[node name="road_right_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -120.097, 0, 1036.68)
+next_checkpoint = NodePath("../road_right_checkpoint5")
+target_speed = 40.0
 
-[node name="stop_signs" parent="." instance=ExtResource("8_52r5s")]
+[node name="road_right_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -166.294, 0, 1186.39)
+next_checkpoint = NodePath("../road_right_checkpoint6")
+target_speed = 40.0
 
-[node name="limit_signs" parent="." instance=ExtResource("9_1g2ba")]
+[node name="road_right_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -219.301, 0, 1327.18)
+next_checkpoint = NodePath("../road_right_checkpoint7")
+target_speed = 40.0
 
-[node name="trees" parent="." instance=ExtResource("10_ypi31")]
+[node name="road_right_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -267.708, 0, 1460.17)
+next_checkpoint = NodePath("../road_right_checkpoint8")
+target_speed = 40.0
 
-[node name="speed_limits" type="Node3D" parent="."]
+[node name="road_right_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -301.163, 0, 1598.02)
+next_checkpoint = NodePath("../road_right_checkpoint9")
+target_speed = 40.0
 
-[node name="speed_limit" parent="speed_limits" instance=ExtResource("10_hymo2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+[node name="road_right_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -312.789, 0, 1687.61)
+next_checkpoint = NodePath("../road_right_checkpoint10")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit"]
-shape = SubResource("BoxShape3D_so1sa")
+[node name="road_right_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -314.256, 0, 1725.34)
+next_checkpoint = NodePath("../road_right_checkpoint11")
+target_speed = 25.0
 
-[node name="speed_limit4" parent="speed_limits" instance=ExtResource("10_hymo2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.254, 1.47445, 512.717)
+[node name="road_right_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -362.556, 0, 1724.56)
+next_checkpoint = NodePath("../road_right_checkpoint12")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit4"]
-shape = SubResource("BoxShape3D_so1sa")
+[node name="road_right_checkpoint12" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -477.84, 0, 1716.26)
 
-[node name="speed_limit5" parent="speed_limits" instance=ExtResource("10_hymo2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.69415, 1.47445, 259.044)
+[node name="road_left_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.1532, 0, 479.69)
+next_checkpoint = NodePath("../road_left_checkpoint3")
+target_speed = 60.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit5"]
-shape = SubResource("BoxShape3D_so1sa")
+[node name="road_left_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.2872, 0, 641.167)
+next_checkpoint = NodePath("../road_left_checkpoint3")
+target_speed = 60.0
 
-[node name="speed_limit2" parent="speed_limits" instance=ExtResource("10_hymo2")]
-transform = Transform3D(0.895323, 0, -0.445417, 0, 1, 0, 0.445417, 0, 0.895323, -211.31, 1.96698, 1341.48)
-limit = 40.0
+[node name="road_left_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.1488, 0, 799.622)
+next_checkpoint = NodePath("../road_left_checkpoint4")
+target_speed = 55.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
-shape = SubResource("BoxShape3D_so1sa")
+[node name="road_left_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88.2812, 0, 980.597)
+next_checkpoint = NodePath("../road_left_checkpoint5")
+target_speed = 50.0
 
-[node name="speed_limit3" parent="speed_limits" instance=ExtResource("10_hymo2")]
-transform = Transform3D(-0.00677186, 0, -0.999977, 0, 1, 0, 0.999977, 0, -0.00677186, -367.371, 1.96698, 1870.94)
-limit = 30.0
+[node name="road_left_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -121.106, 0, 1093.37)
+next_checkpoint = NodePath("../road_left_checkpoint6")
+target_speed = 50.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="speed_limits/speed_limit3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41833, 0, -1.70056)
-shape = SubResource("BoxShape3D_so1sa")
+[node name="road_left_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -155.019, 0, 1196.61)
+next_checkpoint = NodePath("../road_left_checkpoint7")
+target_speed = 50.0
 
-[node name="StopArea" parent="." instance=ExtResource("13_qfpo7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -699.72, -0.580872, 1827.21)
+[node name="road_left_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -181.069, 0, 1275.08)
+next_checkpoint = NodePath("../road_left_checkpoint8")
+target_speed = 50.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StopArea"]
-transform = Transform3D(0.999856, 0, -0.0169638, 0, 1, 0, 0.0169638, 0, 0.999856, -1.17474, 6.67991, 5.38831)
-shape = SubResource("BoxShape3D_eutq7")
+[node name="road_left_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -243.206, 0, 1424.99)
+next_checkpoint = NodePath("../road_left_checkpoint9")
+target_speed = 50.0
 
-[node name="StopArea2" parent="." instance=ExtResource("13_qfpo7")]
-transform = Transform3D(0.0363298, 0, 0.99934, 0, 1, 0, -0.99934, 0, 0.0363298, -774.588, -0.580872, 2291.64)
+[node name="road_left_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -275.656, 0, 1535.62)
+next_checkpoint = NodePath("../road_left_checkpoint11")
+target_speed = 45.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StopArea2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.67991, 5.38831)
-shape = SubResource("BoxShape3D_eutq7")
+[node name="road_left_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -297.316, 0, 1648.16)
+next_checkpoint = NodePath("../road_left_checkpoint12")
+target_speed = 45.0
+
+[node name="road_left_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -303.081, 0, 1745.68)
+next_checkpoint = NodePath("../road_left_checkpoint13")
+target_speed = 45.0
+
+[node name="road_left_checkpoint12" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -304.756, 0, 1964.19)
+next_checkpoint = NodePath("../road_left_checkpoint13")
+target_speed = 45.0
+
+[node name="road_left_checkpoint13" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -308.772, 0, 2246.17)
+target_speed = 40.0
+
+[node name="road_back_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -289.772, 0, 1964.19)
+next_checkpoint = NodePath("../road_back_checkpoint2")
+target_speed = 45.0
+
+[node name="road_back_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -287.24, 0, 1806)
+next_checkpoint = NodePath("../road_back_checkpoint3")
+target_speed = 45.0
+
+[node name="road_back_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -286.146, 0, 1709.5)
+next_checkpoint = NodePath("../road_back_checkpoint4")
+target_speed = 45.0
+
+[node name="road_back_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -277.437, 0, 1626.1)
+next_checkpoint = NodePath("../road_back_checkpoint5")
+target_speed = 45.0
+
+[node name="road_back_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -253.439, 0, 1514.63)
+next_checkpoint = NodePath("../road_back_checkpoint6")
+target_speed = 45.0
+
+[node name="road_back_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -217.215, 0, 1399.93)
+next_checkpoint = NodePath("../road_back_checkpoint7")
+target_speed = 45.0
+
+[node name="road_back_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -171.296, 0, 1289.2)
+next_checkpoint = NodePath("../road_back_checkpoint8")
+target_speed = 55.0
+
+[node name="road_back_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -115.842, 0, 1126.52)
+next_checkpoint = NodePath("../road_back_checkpoint9")
+target_speed = 55.0
+
+[node name="road_back_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -81.5997, 0, 1010.98)
+next_checkpoint = NodePath("../road_back_checkpoint10")
+target_speed = 55.0
+
+[node name="road_back_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -47.3018, 0, 868.964)
+next_checkpoint = NodePath("../road_back_checkpoint11")
+target_speed = 55.0
+
+[node name="road_back_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -21.5098, 0, 741.249)
+next_checkpoint = NodePath("../road_back_checkpoint12")
+target_speed = 55.0
+
+[node name="road_back_checkpoint12" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, -3.86046, 0, 577.442)
+next_checkpoint = NodePath("../road_back_checkpoint13")
+target_speed = 55.0
+
+[node name="road_back_checkpoint13" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, 3.43432, 0, 461.88)
+next_checkpoint = NodePath("../road_back_checkpoint14")
+target_speed = 55.0
+
+[node name="road_back_checkpoint14" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 0.999787, 0.0206458, 0, -0.0206458, 0.999787, 7.17181, 0, 293.633)
+target_speed = 55.0
+
+[node name="side_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -747.697, 0, 1842.42)
+next_checkpoint = NodePath("../side_checkpoint2")
+
+[node name="side_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -679.399, 0, 1844.54)
+next_checkpoint = NodePath("../side_checkpoint3")
+
+[node name="side_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -635.961, 0, 1845.6)
+next_checkpoint = NodePath("../side_checkpoint4")
+
+[node name="side_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -590.899, 0, 1850.97)
+next_checkpoint = NodePath("../side_checkpoint5")
+
+[node name="side_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -558.63, 0, 1854.99)
+next_checkpoint = NodePath("../side_checkpoint6")
+
+[node name="side_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -535.152, 0, 1856.33)
+next_checkpoint = NodePath("../side_checkpoint7")
+
+[node name="side_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -493.258, 0, 1863.9)
+next_checkpoint = NodePath("../side_checkpoint8")
+
+[node name="side_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -462.735, 0, 1868.32)
+next_checkpoint = NodePath("../side_checkpoint9")
+
+[node name="side_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(0.999857, 0, -0.016894, 0, 1, 0, 0.016894, 0, 0.999857, -433.087, 0, 1871.59)
+next_checkpoint = NodePath("../side_checkpoint10")
+
+[node name="side_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(0.999857, 0, -0.016894, 0, 1, 0, 0.016894, 0, 0.999857, -380.672, 0, 1881.54)
+next_checkpoint = NodePath("../side_checkpoint11")
+
+[node name="side_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(0.999857, 0, -0.016894, 0, 1, 0, 0.016894, 0, 0.999857, -216.89, 0, 1889.37)
+
+[node name="north_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -735.931, 0, 1788.04)
+next_checkpoint = NodePath("../north_checkpoint2")
+target_speed = 35.0
+
+[node name="north_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -736.028, 0, 1859.51)
+next_checkpoint = NodePath("../north_checkpoint3")
+target_speed = 35.0
+
+[node name="north_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -737.892, 0, 1903)
+next_checkpoint = NodePath("../north_checkpoint4")
+target_speed = 35.0
+
+[node name="north_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -738.704, 0, 1950.43)
+next_checkpoint = NodePath("../north_checkpoint5")
+target_speed = 35.0
+
+[node name="north_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -739.728, 0, 1987.08)
+next_checkpoint = NodePath("../north_checkpoint6")
+
+[node name="north_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -744.574, 0, 2029.66)
+next_checkpoint = NodePath("../north_checkpoint7")
+
+[node name="north_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -750.961, 0, 2068.78)
+next_checkpoint = NodePath("../north_checkpoint8")
+
+[node name="north_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -761.445, 0, 2114.25)
+next_checkpoint = NodePath("../north_checkpoint9")
+
+[node name="north_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -767.213, 0, 2160.86)
+next_checkpoint = NodePath("../north_checkpoint10")
+
+[node name="north_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -770.071, 0, 2211.76)
+next_checkpoint = NodePath("../north_checkpoint11")
+
+[node name="north_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -775.243, 0, 2286.48)
+next_checkpoint = NodePath("../north_checkpoint12")
+
+[node name="south_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -762.333, 0, 2284.46)
+next_checkpoint = NodePath("../south_checkpoint2")
+
+[node name="south_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -758.741, 0, 2216.46)
+next_checkpoint = NodePath("../south_checkpoint3")
+
+[node name="south_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -756.057, 0, 2161.1)
+next_checkpoint = NodePath("../south_checkpoint4")
+
+[node name="south_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -750.858, 0, 2118.96)
+next_checkpoint = NodePath("../south_checkpoint5")
+
+[node name="south_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -739.101, 0, 2067.89)
+next_checkpoint = NodePath("../south_checkpoint6")
+
+[node name="south_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -732.727, 0, 2028.98)
+next_checkpoint = NodePath("../south_checkpoint7")
+
+[node name="south_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -728.591, 0, 1986.23)
+next_checkpoint = NodePath("../south_checkpoint8")
+
+[node name="south_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -725.915, 0, 1906.2)
+next_checkpoint = NodePath("../south_checkpoint9")
+
+[node name="south_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -724.567, 0, 1768.21)
+target_speed = 35.0
+
+[node name="north_checkpoint12" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -775.306, 0, 2293.79)
+next_checkpoint = NodePath("../north_checkpoint13")
+target_speed = 2.0
+
+[node name="north_checkpoint13" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -777.045, 0, 2347.98)
+next_checkpoint = NodePath("../north_checkpoint14")
+target_speed = 40.0
+
+[node name="north_checkpoint14" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -781.864, 0, 2431.21)
+next_checkpoint = NodePath("../north_checkpoint15")
+target_speed = 35.0
+
+[node name="north_checkpoint15" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -786.755, 0, 2523.67)
+
+[node name="bike1_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -36.782, 0, 548.042)
+next_checkpoint = NodePath("../bike1_checkpoint2")
+
+[node name="bike1_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.4422, 0, 600.822)
+next_checkpoint = NodePath("../bike1_checkpoint3")
+
+[node name="bike1_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.2861, 0, 642.406)
+next_checkpoint = NodePath("../bike1_checkpoint4")
+
+[node name="bike1_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.0486, 0, 715.706)
+
+[node name="bike2_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -745.92, 0, 1937.17)
+next_checkpoint = NodePath("../bike2_checkpoint2")
+
+[node name="bike2_checkpoint2" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -747.132, 0, 1979.52)
+next_checkpoint = NodePath("../bike2_checkpoint3")
+
+[node name="bike2_checkpoint3" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -749.711, 0, 2010.16)
+next_checkpoint = NodePath("../bike2_checkpoint4")
+
+[node name="bike2_checkpoint4" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -753.316, 0, 2037.38)
+next_checkpoint = NodePath("../bike2_checkpoint5")
+
+[node name="bike2_checkpoint5" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -756.221, 0, 2056.56)
+next_checkpoint = NodePath("../bike2_checkpoint6")
+
+[node name="bike2_checkpoint6" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -760.615, 0, 2076.37)
+next_checkpoint = NodePath("../bike2_checkpoint7")
+
+[node name="bike2_checkpoint7" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -769.023, 0, 2112.02)
+next_checkpoint = NodePath("../bike2_checkpoint8")
+
+[node name="bike2_checkpoint8" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -771.632, 0, 2125.72)
+next_checkpoint = NodePath("../bike2_checkpoint9")
+
+[node name="bike2_checkpoint9" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -775.211, 0, 2164.34)
+next_checkpoint = NodePath("../bike2_checkpoint10")
+
+[node name="bike2_checkpoint10" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -780.375, 0, 2266.29)
+next_checkpoint = NodePath("../bike2_checkpoint11")
+
+[node name="bike2_checkpoint11" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -782.628, 0, 2294.63)
+next_checkpoint = NodePath("../bike2_checkpoint12")
+
+[node name="bike2_checkpoint12" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -782.913, 0, 2346.03)
+next_checkpoint = NodePath("../bike2_checkpoint13")
+
+[node name="bike2_checkpoint13" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -793.11, 0, 2502.78)
+
+[node name="turn_checkpoint" parent="checkpoints" instance=ExtResource("13_jnhlu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -774.119, 0, 2320.59)
+next_checkpoint = NodePath("../north_checkpoint14")
+target_speed = 20.0
+
+[node name="cars" type="Node3D" parent="."]
+
+[node name="car" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.999744, 0, -0.022635, 0, 1, 0, 0.022635, 0, 0.999744, -8.06985, 0, 149.145)
+next_checkpoint_path = NodePath("../../checkpoints/road_left_checkpoint")
+
+[node name="car2" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.999744, 0, -0.022635, 0, 1, 0, 0.022635, 0, 0.999744, -8.93519, 0, 231.208)
+next_checkpoint_path = NodePath("../../checkpoints/road_left_checkpoint")
+
+[node name="car3" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.999744, 0, -0.022635, 0, 1, 0, 0.022635, 0, 0.999744, -23.7388, 0, 355.579)
+next_checkpoint_path = NodePath("../../checkpoints/road_right_checkpoint")
+
+[node name="car4" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.99928, 0, -0.0379518, 0, 1, 0, 0.0379518, 0, 0.99928, -10.3496, 0, 418.618)
+next_checkpoint_path = NodePath("../../checkpoints/road_left_checkpoint")
+
+[node name="car13" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.999895, 0, 0.0145032, 0, 1, 0, -0.0145032, 0, -0.999895, -12.0836, 0, 670.794)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint13")
+
+[node name="car15" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.977969, 0, 0.208748, 0, 1, 0, -0.208748, 0, -0.977969, -58.0734, 0, 916.142)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint11")
+
+[node name="car28" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.932714, 0, 0.360615, 0, 1, 0, -0.360615, 0, -0.932714, -156.746, 0, 1246.86)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint9")
+active_radius = 500
+
+[node name="car29" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.932714, 0, 0.360615, 0, 1, 0, -0.360615, 0, -0.932714, -189.708, 0, 1327.34)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint9")
+active_radius = 500
+
+[node name="car30" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.999988, 0, -0.00485209, 0, 1, 0, 0.00485209, 0, -0.999988, -288.894, 0, 1845.78)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint3")
+active_radius = 500
+
+[node name="car14" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.999895, 0, 0.0145032, 0, 1, 0, -0.0145032, 0, -0.999895, 4.15793, 0, 640.372)
+next_checkpoint_path = NodePath("../../checkpoints/road_back_checkpoint13")
+
+[node name="car5" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.99618, 0, -0.0873296, 0, 1, 0, 0.0873296, 0, 0.99618, -14.8404, 0, 526.998)
+next_checkpoint_path = NodePath("../../checkpoints/road_left_checkpoint2")
+
+[node name="car6" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(-0.0675974, 0, -0.997713, 0, 1, 0, 0.997713, 0, -0.0675974, -373.798, 0, 1862.67)
+
+[node name="car7" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(-0.0427476, 0, -0.999086, 0, 1, 0, 0.999086, 0, -0.0427476, -388.852, 0, 1861.74)
+
+[node name="car8" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(-0.0542531, 0, -0.998527, 0, 1, 0, 0.998527, 0, -0.0542531, -409.74, 0, 1860.75)
+
+[node name="car17" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(0.145807, 0, 0.989313, 0, 1, 0, -0.989313, 0, 0.145807, -474.13, 0, 1876.21)
+
+[node name="car18" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(0.121142, 0, 0.992635, 0, 1, 0, -0.992635, 0, 0.121142, -459.195, 0, 1878.32)
+
+[node name="car19" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(0.132568, 0, 0.991174, 0, 1, 0, -0.991174, 0, 0.132568, -438.449, 0, 1880.95)
+
+[node name="car9" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(-0.024502, 0, -0.9997, 0, 1, 0, 0.9997, 0, -0.024502, -640.77, 0, 1826.8)
+
+[node name="car10" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(-0.144184, 0, -0.989551, 0, 1, 0, 0.989551, 0, -0.144184, -622.401, 0, 1827.96)
+
+[node name="car11" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(0.226753, 0, 0.973952, 0, 1, 0, -0.973952, 0, 0.226753, -533.132, 0, 1866.57)
+
+[node name="car12" parent="cars" instance=ExtResource("1_po5jm")]
+process_mode = 4
+transform = Transform3D(0.226753, 0, 0.973952, 0, 1, 0, -0.973952, 0, 0.226753, -520.534, 0, 1869.67)
+
+[node name="car16" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(0.0341494, 0, 0.999417, 0, 1, 0, -0.999417, 0, 0.0341494, -771.869, 0, 1840.59)
+next_checkpoint_path = NodePath("../../checkpoints/side_checkpoint")
+active_radius = 500
+
+[node name="car20" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -737.35, 0, 1723.76)
+next_checkpoint_path = NodePath("../../checkpoints/north_checkpoint")
+active_radius = 220
+
+[node name="car22" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -737.35, 0, 1688.59)
+next_checkpoint_path = NodePath("../../checkpoints/north_checkpoint")
+active_radius = 160
+
+[node name="car23" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -739.324, 0, 1621.84)
+next_checkpoint_path = NodePath("../../checkpoints/north_checkpoint")
+active_radius = 280
+
+[node name="car24" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -739.324, 0, 1570.21)
+next_checkpoint_path = NodePath("../../checkpoints/north_checkpoint")
+active_radius = 270
+
+[node name="car21" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -737.35, 0, 1749.32)
+next_checkpoint_path = NodePath("../../checkpoints/north_checkpoint")
+active_radius = 200
+
+[node name="car25" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.998846, 0, 0.0480305, 0, 1, 0, -0.0480305, 0, -0.998846, -763.917, 0, 2306.88)
+next_checkpoint_path = NodePath("../../checkpoints/south_checkpoint")
+active_radius = 530
+
+[node name="car27" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.998846, 0, 0.0480305, 0, 1, 0, -0.0480305, 0, -0.998846, -769.495, 0, 2322.18)
+next_checkpoint_path = NodePath("../../checkpoints/south_checkpoint")
+active_radius = 500
+
+[node name="car26" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.998846, 0, 0.0480305, 0, 1, 0, -0.0480305, 0, -0.998846, -761.909, 0, 2323.38)
+next_checkpoint_path = NodePath("../../checkpoints/south_checkpoint")
+active_radius = 400
+
+[node name="car31" parent="cars" instance=ExtResource("1_po5jm")]
+transform = Transform3D(-0.0620066, 0, -0.998076, 0, 1, 0, 0.998076, 0, -0.0620066, -740.623, -0.0349884, 2312.48)
+next_checkpoint_path = NodePath("../../checkpoints/turn_checkpoint")
+active_radius = 42
+
+[node name="bikes" type="Node3D" parent="."]
+
+[node name="bike" parent="bikes" instance=ExtResource("15_4otew")]
+transform = Transform3D(0.996234, 0, -0.0867037, 0, 1, 0, 0.0867037, 0, 0.996234, -34.8357, 0, 531.361)
+next_checkpoint_path = NodePath("../../checkpoints/bike1_checkpoint")
+active_radius = 100.0
+speed = 15.0
+
+[node name="bike2" parent="bikes" instance=ExtResource("15_4otew")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -745.349, -0.433636, 1907.47)
+next_checkpoint_path = NodePath("../../checkpoints/bike2_checkpoint")
+active_radius = 70.0
+speed = 14.0
+
+[node name="restart_area" parent="." instance=ExtResource("16_llhh8")]
+transform = Transform3D(0.997683, 0, -0.0680327, 0, 1, 0, 0.0680327, 0, 0.997683, -1090.34, 0, 2281.29)

@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://0wn6voucbufh"]
+
+[ext_resource type="Script" path="res://bike.gd" id="1_0edv2"]
+[ext_resource type="PackedScene" uid="uid://cpue6e3hbbhl0" path="res://bike_model.tscn" id="1_bnqq7"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0ewpw"]
+resource_local_to_scene = true
+radius = 30.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_05a28"]
+size = Vector3(0.471175, 3.28228, 3.73)
+
+[node name="bike" type="CharacterBody3D"]
+script = ExtResource("1_0edv2")
+
+[node name="model" parent="." instance=ExtResource("1_bnqq7")]
+
+[node name="active_area" type="Area3D" parent="."]
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="active_area"]
+shape = SubResource("SphereShape3D_0ewpw")
+
+[node name="shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.56537, 0)
+shape = SubResource("BoxShape3D_05a28")

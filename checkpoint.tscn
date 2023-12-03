@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqkyf1b3cdq44"]
+
+[ext_resource type="Script" path="res://checkpoint.gd" id="1_6d85g"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_p8cnu"]
+radius = 6.51118
+
+[node name="checkpoint" type="Area3D"]
+script = ExtResource("1_6d85g")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_p8cnu")

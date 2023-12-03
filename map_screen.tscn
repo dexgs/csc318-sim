@@ -1,9 +1,27 @@
-[gd_scene load_steps=17 format=3 uid="uid://b0jelcu6ony24"]
+[gd_scene load_steps=20 format=3 uid="uid://b0jelcu6ony24"]
 
 [ext_resource type="Texture2D" uid="uid://wulpemwrdaj2" path="res://map.png" id="1_82oto"]
 [ext_resource type="Script" path="res://map_screen.gd" id="1_kbeoq"]
 [ext_resource type="Texture2D" uid="uid://b7mxmonh4c4f0" path="res://blue_circle.png" id="2_44dp8"]
 [ext_resource type="Texture2D" uid="uid://btcrcqmbk2a07" path="res://yellow_border.png" id="4_i5tja"]
+[ext_resource type="AudioStream" uid="uid://c3rudea7vupyy" path="res://slow_down.ogg" id="5_djs5m"]
+[ext_resource type="AudioStream" uid="uid://dlhjestq0evms" path="res://stop sign.mp3" id="6_jshlt"]
+[ext_resource type="AudioStream" uid="uid://diyxjgryfgn0x" path="res://look_both_ways.ogg" id="7_6ohgr"]
+
+[sub_resource type="Animation" id="Animation_biyq7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("red_screen:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.47821, 0, 0.0257839, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_agx0s"]
 resource_name = "red_screen_pulse"
@@ -22,25 +40,25 @@ tracks/0/keys = {
 "values": [Color(0.764706, 0, 0.0666667, 1), Color(0.47821, 0, 0.0257839, 1), Color(0.764706, 0, 0.0666667, 1)]
 }
 
-[sub_resource type="Animation" id="Animation_biyq7"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yyg1p"]
+_data = {
+"RESET": SubResource("Animation_biyq7"),
+"red_screen_pulse": SubResource("Animation_agx0s")
+}
+
+[sub_resource type="Animation" id="Animation_ej3rp"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("red_screen:color")
+tracks/0/path = NodePath("red_screen:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(0.47821, 0, 0.0257839, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_yyg1p"]
-_data = {
-"RESET": SubResource("Animation_biyq7"),
-"red_screen_pulse": SubResource("Animation_agx0s")
+"values": [Color(1, 1, 1, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_q3f6m"]
@@ -59,25 +77,25 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_ej3rp"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gkmao"]
+_data = {
+"RESET": SubResource("Animation_ej3rp"),
+"red_screen_fade": SubResource("Animation_q3f6m")
+}
+
+[sub_resource type="Animation" id="Animation_udix3"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("red_screen:modulate")
+tracks/0/path = NodePath("../yellow_border:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_gkmao"]
-_data = {
-"RESET": SubResource("Animation_ej3rp"),
-"red_screen_fade": SubResource("Animation_q3f6m")
+"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_cdgii"]
@@ -97,12 +115,18 @@ tracks/0/keys = {
 "values": [Color(1, 1, 1, 1), Color(0.647059, 0.647059, 0.647059, 1), Color(1, 1, 1, 1)]
 }
 
-[sub_resource type="Animation" id="Animation_udix3"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1vk3c"]
+_data = {
+"RESET": SubResource("Animation_udix3"),
+"yellow_border_pulse": SubResource("Animation_cdgii")
+}
+
+[sub_resource type="Animation" id="Animation_3tdhj"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("../yellow_border:modulate")
+tracks/0/path = NodePath("../yellow_border:self_modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -110,12 +134,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1vk3c"]
-_data = {
-"RESET": SubResource("Animation_udix3"),
-"yellow_border_pulse": SubResource("Animation_cdgii")
 }
 
 [sub_resource type="Animation" id="Animation_3pq0i"]
@@ -132,21 +150,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_3tdhj"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("../yellow_border:self_modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i5jyn"]
@@ -243,3 +246,21 @@ root_node = NodePath("../yellow_border_pulse")
 libraries = {
 "": SubResource("AnimationLibrary_i5jyn")
 }
+
+[node name="speed_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_djs5m")
+volume_db = -15.961
+
+[node name="stop_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_jshlt")
+volume_db = -11.869
+
+[node name="stop_timer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
+[node name="look_both_ways" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_6ohgr")
+volume_db = -15.476
+
+[connection signal="timeout" from="stop_timer" to="." method="_on_stop_timer_timeout"]

@@ -1,0 +1,139 @@
+[gd_scene load_steps=11 format=3 uid="uid://cpue6e3hbbhl0"]
+
+[ext_resource type="PackedScene" uid="uid://uspejguvby5i" path="res://bike.glb" id="1_7tp0u"]
+[ext_resource type="Script" path="res://bike_model.gd" id="2_cqy0r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7gkbw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dc0pb"]
+resource_local_to_scene = true
+
+[sub_resource type="Animation" id="Animation_n6cxr"]
+resource_name = "pedal"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Icosphere_027:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector3(0.074, 0.074, 0.074), Vector3(-0.074, 0.074, 0.074), Vector3(0.074, 0.074, 0.074)]
+}
+
+[sub_resource type="Animation" id="Animation_cqmc5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Icosphere_027:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.074, 0.074, 0.074)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tgoxb"]
+_data = {
+"RESET": SubResource("Animation_cqmc5"),
+"pedal": SubResource("Animation_n6cxr")
+}
+
+[sub_resource type="Animation" id="Animation_0v520"]
+resource_name = "wheels"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("bike_wheel_all:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(6.28319, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("bike_wheel_all_001:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(6.28319, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_riyjf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("bike_wheel_all:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("bike_wheel_all_001:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ws6oe"]
+_data = {
+"RESET": SubResource("Animation_riyjf"),
+"wheels": SubResource("Animation_0v520")
+}
+
+[node name="bike2" instance=ExtResource("1_7tp0u")]
+script = ExtResource("2_cqy0r")
+
+[node name="bike_wheel_all" parent="." index="0"]
+transform = Transform3D(0.894968, 0, 0, 0, 0.894968, 0, 0, 0, 0.894968, -0.00439203, 0.606353, 1.16188)
+
+[node name="bike_wheel_spoke_flip" parent="bike_wheel_all" index="3"]
+transform = Transform3D(-1, 0, 0, 0, 0.892109, 0.45182, 0, -0.45182, 0.892109, 0, 0, 0)
+
+[node name="Circle_002" parent="." index="1"]
+transform = Transform3D(0, 0.087206, 0, -0.087206, 0, 0, 0, 0, 0.087206, -0.00439203, 0.428739, -0.0911654)
+surface_material_override/0 = SubResource("StandardMaterial3D_7gkbw")
+
+[node name="bike_wheel_all_001" parent="." index="2"]
+transform = Transform3D(0.894968, 0, 0, 0, 0.894968, 0, 0, 0, 0.894968, -0.00439203, 0.606353, -1.05827)
+
+[node name="Icosphere_027" parent="." index="3"]
+transform = Transform3D(0.074, 0, 0, 0, 0.074, 0, 0, 0, 0.074, 0.0397536, 2.87442, 0.43692)
+surface_material_override/0 = SubResource("StandardMaterial3D_dc0pb")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="4"]
+autoplay = "pedal"
+libraries = {
+"": SubResource("AnimationLibrary_tgoxb")
+}
+
+[node name="wheel_animation" type="AnimationPlayer" parent="." index="5"]
+autoplay = "wheels"
+libraries = {
+"": SubResource("AnimationLibrary_ws6oe")
+}

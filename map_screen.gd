@@ -19,6 +19,9 @@ func _physics_process(delta: float) -> void:
 	var diff = speed - speed_limit
 	var abs_diff = abs(diff)
 	
+	if speed > 8:
+		$look_both_ways.stop()
+	
 	if abs_diff < 5 or int(speed) < 5:
 		yellow_border_off()
 	else:
@@ -29,6 +32,8 @@ func _physics_process(delta: float) -> void:
 		$red_screen/stop.visible = true
 		if int(speed) == 0:
 			stop = false
+			$look_both_ways.play()
+			$stop_timer.stop()
 		else:
 			red_screen_on()
 	else:
@@ -54,9 +59,18 @@ func yellow_border_off() -> void:
 		$yellow_border_fade.play("yellow_border_fade")
 
 func red_screen_on() -> void:
+	if stop and $stop_timer.is_stopped():
+		$stop_timer.start()
+		
 	if $red_screen_fade.current_animation_position > 0.0:
 		$red_screen_fade.play_backwards("red_screen_fade")
+		if not $speed_sound.playing and not stop:
+			$speed_sound.play()
 
 func red_screen_off() -> void:
 	if $red_screen_fade.current_animation_position < 0.5:
 		$red_screen_fade.play("red_screen_fade")
+
+
+func _on_stop_timer_timeout():
+	$stop_sound.play()
